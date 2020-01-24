@@ -33,6 +33,10 @@ function preload ()
 
 var game = new Phaser.Game(config);
 
+function jump (player,jumper){
+    player.setVelocityY(-600);
+}
+
 function collectStar (player, star)
 {
     star.disableBody(true, true);
@@ -81,11 +85,19 @@ function create() {
 
     platforms.create(600, 400, 'ground');
     platforms.create(50, 250, 'ground');
+
     platforms.create(750, 220, 'ground');
     platforms.create(400, 568, 'ground').setScale(2).refreshBody();
 
+    jumpers = this.physics.add.staticGroup();
+    jumpers.create(350, 534, 'ground').setScale(0.1).refreshBody();
+    jumpers.create(250, 380, 'ground').setScale(0.1).refreshBody();
+    jumpers.create(450, 300, 'ground').setScale(0.1).refreshBody();
+    // jumper = this.add.sprite(350, 534, 'ground').setScale(-0.1);
+
+
     player = this.physics.add.sprite(100, 450, 'dude');
-    // player.body.setGravityY(100)
+    player.body.setGravityY(500)
     player.setBounce(0.2);
     player.setCollideWorldBounds(true);
     this.physics.add.collider(player, platforms);
@@ -130,6 +142,9 @@ function create() {
       child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
 
     });
+
+    // this.physics.add.collider(jumpers,player);
+    this.physics.add.overlap(player, jumpers, jump, null, this);
 
     this.physics.add.collider(stars, platforms);
     this.physics.add.overlap(player, stars, collectStar, null, this);
